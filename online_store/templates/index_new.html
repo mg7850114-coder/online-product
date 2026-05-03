@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium TechHub - Best Electronics Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .product-img {
+            height: 220px;
+            object-fit: contain;
+            padding: 20px;
+            background: #f5f5f5;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+        
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #ff4757;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #00b894;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #aaa;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .rating {
+            color: #ffc107;
+            margin: 10px 0;
+        }
+        
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-custom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+        
+        .navbar-brand {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #333;
+            transition: 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #667eea;
+        }
+        
+        .cart-count {
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+            position: relative;
+            top: -8px;
+            right: 8px;
+        }
+        
+        footer {
+            background: #2d3436;
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section { padding: 50px 0; }
+            .section-title { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-microchip me-2"></i>Premium TechHub
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shop">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shop?category=Laptops">Laptops</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shop?category=Smartphones">Phones</a></li>
+                <li class="nav-item"><a class="nav-link" href="/shop?category=Audio">Audio</a></li>
+                {% if 'user_id' in session %}
+                    <li class="nav-item"><a class="nav-link" href="/wishlist"><i class="far fa-heart"></i> Wishlist</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle"></i> {{ session['username'] }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/profile">My Profile</a></li>
+                            <li><a class="dropdown-item" href="/orders">My Orders</a></li>
+                            {% if session['role'] == 'admin' %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="/admin">Admin Panel</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item"><a class="btn btn-outline-primary me-2" href="/login">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-primary" href="/register">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Welcome to Premium TechHub</h1>
+        <p class="lead mb-4">Discover the latest technology at unbeatable prices</p>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form action="/shop" method="GET" class="d-flex">
+                    <input type="text" name="search" class="form-control form-control-lg rounded-pill me-2" placeholder="Search for products...">
+                    <button type="submit" class="btn btn-light rounded-pill px-4"><i class="fas fa-search"></i> Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+    <!-- Featured Products -->
+    <h2 class="section-title">⭐ Featured Products</h2>
+    <div class="row">
+        {% for product in featured %}
+        <div class="col-md-3">
+            <div class="product-card" onclick="location.href='/product/{{ product.id }}'">
+                <div style="position: relative;">
+                    {% if product.discount > 0 %}
+                        <div class="discount-badge">{{ product.discount }}% OFF</div>
+                    {% endif %}
+                    {% if product.is_new %}
+                        <div class="new-badge">NEW</div>
+                    {% endif %}
+                    <img src="{{ product.image }}" class="product-img w-100" alt="{{ product.name }}">
+                </div>
+                <div class="p-3">
+                    <small class="text-muted">{{ product.brand }}</small>
+                    <h6 class="mt-1 fw-bold">{{ product.name[:35] }}{% if product.name|length > 35 %}...{% endif %}</h6>
+                    <div class="rating">
+                        {% for i in range(product.rating|int) %}
+                            <i class="fas fa-star"></i>
+                        {% endfor %}
+                        {% if product.rating % 1 >= 0.5 %}
+                            <i class="fas fa-star-half-alt"></i>
+                        {% endif %}
+                        <span class="text-muted ms-1">({{ product.reviews_count }})</span>
+                    </div>
+                    <div>
+                        <span class="price">${{ "%.2f"|format(product.price) }}</span>
+                        {% if product.original_price > product.price %}
+                            <span class="original-price">${{ "%.2f"|format(product.original_price) }}</span>
+                        {% endif %}
+                    </div>
+                    <a href="/add_to_cart/{{ product.id }}" class="btn btn-custom btn-sm w-100 mt-3">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- New Arrivals -->
+    <h2 class="section-title mt-5">🆕 New Arrivals</h2>
+    <div class="row">
+        {% for product in new_arrivals %}
+        <div class="col-md-3">
+            <div class="product-card" onclick="location.href='/product/{{ product.id }}'">
+                <div style="position: relative;">
+                    <div class="new-badge">NEW</div>
+                    <img src="{{ product.image }}" class="product-img w-100" alt="{{ product.name }}">
+                </div>
+                <div class="p-3">
+                    <small class="text-muted">{{ product.brand }}</small>
+                    <h6 class="mt-1 fw-bold">{{ product.name[:35] }}{% if product.name|length > 35 %}...{% endif %}</h6>
+                    <div class="rating">
+                        {% for i in range(product.rating|int) %}
+                            <i class="fas fa-star"></i>
+                        {% endfor %}
+                        <span class="text-muted ms-1">({{ product.reviews_count }})</span>
+                    </div>
+                    <div>
+                        <span class="price">${{ "%.2f"|format(product.price) }}</span>
+                    </div>
+                    <a href="/add_to_cart/{{ product.id }}" class="btn btn-custom btn-sm w-100 mt-3">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Best Selling -->
+    <h2 class="section-title mt-5">🔥 Best Selling</h2>
+    <div class="row">
+        {% for product in best_selling %}
+        <div class="col-md-3">
+            <div class="product-card" onclick="location.href='/product/{{ product.id }}'">
+                <img src="{{ product.image }}" class="product-img w-100" alt="{{ product.name }}">
+                <div class="p-3">
+                    <small class="text-muted">{{ product.brand }}</small>
+                    <h6 class="mt-1 fw-bold">{{ product.name[:35] }}{% if product.name|length > 35 %}...{% endif %}</h6>
+                    <div class="rating">
+                        {% for i in range(product.rating|int) %}
+                            <i class="fas fa-star"></i>
+                        {% endfor %}
+                        <span class="text-muted ms-1">({{ product.reviews_count }})</span>
+                    </div>
+                    <div>
+                        <span class="price">${{ "%.2f"|format(product.price) }}</span>
+                    </div>
+                    <a href="/add_to_cart/{{ product.id }}" class="btn btn-custom btn-sm w-100 mt-3">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5><i class="fas fa-microchip me-2"></i>Premium TechHub</h5>
+                <p>Your one-stop shop for premium electronics and gadgets.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/shop" class="text-white text-decoration-none">Shop Now</a></li>
+                    <li><a href="/orders" class="text-white text-decoration-none">Track Order</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Support</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact</h5>
+                <p><i class="fas fa-envelope me-2"></i> support@techhub.com</p>
+                <p><i class="fas fa-phone me-2"></i> +1 (888) 123-4567</p>
+            </div>
+        </div>
+        <hr class="mt-4">
+        <div class="text-center">
+            <p>&copy; 2024 Premium TechHub - All Rights Reserved</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

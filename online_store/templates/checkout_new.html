@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Premium TechHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: white; box-shadow: 0 2px 20px rgba(0,0,0,0.1); padding: 15px 0; }
+        .navbar-brand { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .checkout-card { background: white; border-radius: 20px; padding: 30px; margin-bottom: 20px; }
+        .summary-card { background: #f8f9fa; border-radius: 20px; padding: 25px; position: sticky; top: 20px; }
+        .btn-place { background: linear-gradient(135deg, #00b894, #019874); border: none; padding: 15px; font-weight: 600; border-radius: 30px; width: 100%; color: white; font-size: 18px; }
+        footer { background: #2d3436; color: white; padding: 30px 0 20px; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-microchip me-2"></i>Premium TechHub</a>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <h2 class="mb-4"><i class="fas fa-credit-card me-2"></i>Checkout</h2>
+    
+    <div class="row">
+        <div class="col-md-7">
+            <div class="checkout-card">
+                <h5 class="mb-3">Shipping Information</h5>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" value="{{ session['username'] if session else '' }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" value="{{ session['email'] if session else '' }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Shipping Address</label>
+                        <textarea name="address" class="form-control" rows="3" required>123 Tech Street, Silicon Valley, CA 94025</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Payment Method</label>
+                        <select name="payment" class="form-select" required>
+                            <option value="Credit Card">💳 Credit Card</option>
+                            <option value="PayPal">💰 PayPal</option>
+                            <option value="Apple Pay">📱 Apple Pay</option>
+                        </select>
+                    </div>
+            </div>
+        </div>
+        
+        <div class="col-md-5">
+            <div class="summary-card">
+                <h5 class="mb-3">Order Summary</h5>
+                {% for item in items %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span>{{ item.product.name[:20] }} x{{ item.quantity }}</span>
+                    <span>${{ "%.2f"|format(item.product.price * item.quantity) }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span>${{ "%.2f"|format(subtotal) }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping:</span>
+                    <span>${{ "%.2f"|format(shipping) }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Tax:</span>
+                    <span>${{ "%.2f"|format(tax) }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-4">
+                    <strong>Total:</strong>
+                    <strong class="text-primary fs-3">${{ "%.2f"|format(total) }}</strong>
+                </div>
+                <button type="submit" class="btn-place"><i class="fas fa-check-circle me-2"></i>Place Order</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container text-center">
+        <p>&copy; 2024 Premium TechHub - All Rights Reserved</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

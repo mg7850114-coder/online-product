@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Premium TechHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: #2d3436; padding: 15px 0; }
+        .navbar-brand { font-size: 28px; font-weight: 800; color: white; }
+        .admin-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .stat-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 15px; padding: 25px; text-align: center; }
+        .stat-number { font-size: 36px; font-weight: bold; }
+        .table-container { background: white; border-radius: 15px; padding: 20px; overflow-x: auto; }
+        footer { background: #2d3436; color: white; padding: 20px 0; margin-top: 50px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-microchip me-2"></i>Admin Panel</a>
+        <div>
+            <a href="/" class="btn btn-outline-light">Back to Store</a>
+            <a href="/logout" class="btn btn-danger ms-2">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <h2 class="mb-4"><i class="fas fa-crown me-2"></i>Admin Dashboard</h2>
+    
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <i class="fas fa-box fa-3x mb-2"></i>
+                <div class="stat-number">{{ products|length }}</div>
+                <div>Total Products</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <i class="fas fa-users fa-3x mb-2"></i>
+                <div class="stat-number">{{ users|length }}</div>
+                <div>Total Users</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <i class="fas fa-shopping-cart fa-3x mb-2"></i>
+                <div class="stat-number">{{ orders|length }}</div>
+                <div>Total Orders</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Products Table -->
+    <div class="table-container mb-4">
+        <h4 class="mb-3"><i class="fas fa-box me-2"></i>Products Management</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Brand</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in products[:10] %}
+                    <tr>
+                        <td>{{ p.id }}</td>
+                        <td><img src="{{ p.image }}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;"></td>
+                        <td>{{ p.name[:30] }}{% if p.name|length > 30 %}...{% endif %}</td>
+                        <td>{{ p.brand }}</td>
+                        <td><span class="badge bg-secondary">{{ p.category }}</span></td>
+                        <td class="text-primary fw-bold">${{ "%.2f"|format(p.price) }}</td>
+                        <td>{{ p.stock }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="table-container mb-4">
+        <h4 class="mb-3"><i class="fas fa-users me-2"></i>Users Management</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td><span class="badge {% if user.role == 'admin' %}bg-danger{% else %}bg-success{% endif %}">{{ user.role }}</span></td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Orders Table -->
+    <div class="table-container">
+        <h4 class="mb-3"><i class="fas fa-truck me-2"></i>Orders Management</h4>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.order_number }}</td>
+                        <td>{{ order.user.username if order.user else 'N/A' }}</td>
+                        <td>{{ order.created_at.strftime('%Y-%m-%d') if order.created_at else 'N/A' }}</td>
+                        <td class="text-primary fw-bold">${{ "%.2f"|format(order.total) }}</td>
+                        <td><span class="badge bg-warning text-dark">{{ order.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2024 Premium TechHub Admin Panel</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

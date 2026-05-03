@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Premium TechHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: white; box-shadow: 0 2px 20px rgba(0,0,0,0.1); padding: 15px 0; }
+        .navbar-brand { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .order-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; transition: 0.3s; }
+        .order-card:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .status-badge { padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-pending { background: #ffc107; color: #333; }
+        .status-shipped { background: #17a2b8; color: white; }
+        .status-delivered { background: #28a745; color: white; }
+        footer { background: #2d3436; color: white; padding: 30px 0 20px; margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/"><i class="fas fa-microchip me-2"></i>Premium TechHub</a>
+        <div class="ms-auto">
+            <a href="/shop" class="btn btn-outline-primary">Continue Shopping</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <h2 class="mb-4"><i class="fas fa-truck me-2"></i>My Orders</h2>
+    
+    {% if orders %}
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <h6 class="text-muted mb-1">Order #</h6>
+                    <strong>{{ order.order_number }}</strong>
+                </div>
+                <div class="col-md-2">
+                    <h6 class="text-muted mb-1">Date</h6>
+                    <span>{{ order.created_at.strftime('%b %d, %Y') if order.created_at else 'N/A' }}</span>
+                </div>
+                <div class="col-md-2">
+                    <h6 class="text-muted mb-1">Total</h6>
+                    <h5 class="text-primary mb-0">${{ "%.2f"|format(order.total) }}</h5>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-muted mb-1">Status</h6>
+                    <span class="status-badge 
+                        {% if order.status == 'pending' %}status-pending
+                        {% elif order.status == 'shipped' %}status-shipped
+                        {% else %}status-delivered{% endif %}">
+                        {{ order.status|upper }}
+                    </span>
+                </div>
+                <div class="col-md-2 text-end">
+                    <a href="/orders" class="btn btn-sm btn-outline-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-receipt fa-5x text-muted mb-4"></i>
+        <h3>No orders yet</h3>
+        <p>Start shopping to see your orders here</p>
+        <a href="/shop" class="btn btn-primary btn-lg mt-3">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+
+<footer>
+    <div class="container text-center">
+        <p>&copy; 2024 Premium TechHub - All Rights Reserved</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
